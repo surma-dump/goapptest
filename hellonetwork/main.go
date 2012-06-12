@@ -8,22 +8,22 @@ import (
 )
 
 var (
-	help = flag.Bool("help", false, "Show this help")
+	help   = flag.Bool("help", false, "Show this help")
+	socket = flag.String("socket", "", "Socket to listen to")
 )
 
 func main() {
 	flag.Parse()
 
-	if *help || flag.NArg() != 1 {
+	if *help || *socket == "" {
 		fmt.Println("Usage: hellonetwork [options] <address to bind to>")
 		flag.PrintDefaults()
 		return
 	}
 
-	addr := flag.Arg(0)
-	l, e := net.Listen("tcp", addr)
+	l, e := net.Listen("tcp", *socket)
 	if e != nil {
-		log.Printf("Could bind to %s: %s", addr, e)
+		log.Printf("Could bind to %s: %s", *socket, e)
 	}
 	for {
 		c, e := l.Accept()
@@ -36,5 +36,5 @@ func main() {
 
 func handleConnection(c net.Conn) {
 	defer c.Close()
-	fmt.Fprintf(c, "Hi! :)\n")
+	fmt.Fprintf(c, "Tach! :)\n")
 }
